@@ -2,27 +2,23 @@ import tensorflow as tf
 keras = tf.keras
 import cv2
 import numpy as np
-from random import choice
 
 model = keras.models.load_model("BCS.h5")
 
-CLASS_MAP =  {
+# Create a dictionary to map the prediction value to the correct name
+name_map =  {
     0: "Bird",
     1: "Snake",
     2: "Cow",
     3: "None"
 }
 
-def mapper(val):
-    return CLASS_MAP[val]
-
 cap = cv2.VideoCapture(0)
-
 while True:
     ret, frame = cap.read()
     if not ret:
         continue
-
+        
     # rectangle for user to play
     cv2.rectangle(frame, (25, 25), (300, 300), (255, 255, 255), 2)
     
@@ -36,7 +32,7 @@ while True:
     # predict the move made
     pred = model.predict(np.array([sobelxy]))
     player_move_code = np.argmax(pred[0])
-    player_move_name = mapper(player_move_code)
+    player_move_name = name_map[player_move_code]
     # print(user_move_name)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
